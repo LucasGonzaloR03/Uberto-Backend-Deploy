@@ -1,0 +1,78 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env
+  db:
+    image: postgres:17-alpine
+    container_name: uberto_sql
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./Docker/init_db.sh:/docker-entrypoint-initdb.d/01_init_db.sh
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container_uberto
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@phm.edu.ar
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  mongo:
+    # tomamos la última imagen de mongo
+    image: mongo:latest
+    container_name: uberto-mongo
+    hostname: host-mongo-ubertomongo
+    ports:
+      - "27020:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: ubertomongo
+
+  redis:
+    container_name: redis-uberto
+    hostname: redis
+    image: redis
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    container_name: redis-commander-uberto
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+
+  neo4j:
+    image: neo4j:latest
+    restart: unless-stopped
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      # Raise memory limits
+      server.memory.pagecache.size: 1G
+      server.memory.heap.max_size: 1G
+      # auth
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+      NEO4J_AUTH: neo4j/passw0rd
+
+volumes:
+  db:
+  pgadmin-data:

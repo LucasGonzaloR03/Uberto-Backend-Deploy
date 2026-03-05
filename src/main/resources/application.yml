@@ -1,0 +1,66 @@
+server:
+  port: 9000
+  error:
+    whitelabel:
+      enabled: false
+    include-message: always
+
+spring:
+  #   base de datos posta
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        #dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  #MongoDB sin sharding
+  data:
+    mongodb:
+      uri: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@uberto-mongo.zvot1di.mongodb.net/uberto-mongo.zvot1di.mongodb.net?authSource=admin&appName=uberto-mongo
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: true
+  ##MongoDB con sharding
+#  data:
+#    mongodb:
+#      host: localhost
+#      port: 27117
+#      database: uberto_mongo
+#  server:
+#    error:
+#      include-message: always
+#      include-binding-errors: always
+
+  neo4j:
+    uri: ${NEO_URI}
+    authentication:
+      username: ${NEO_USER}
+      password: ${NEO_PASSWORD}
+
+# Para activar el Trace
+logging:
+  level:
+    root: INFO
+
+
+#jwt
+
+jwt:
+    key: ${JWT_KEY}
+    access-token-expiration: 50000000
+    refresh-token-expiration: 86400000
+
+

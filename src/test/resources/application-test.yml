@@ -1,0 +1,47 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: sa
+    driverClassName: org.h2.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        hbm2ddl:
+          auto: create-drop
+        connection:
+          pool_size: 50
+
+  #MongoDB sin sharding
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27021/ubertotest?authSource=admin
+    redis:
+      host: localhost
+      port: 6380
+      ssl:
+        enabled: true
+
+
+  neo4j:
+    uri: bolt://localhost:7688
+    authentication:
+      username: neo4j
+      password: passw0rd
+
+jwt:
+  key: "djsfkkhdfhhfdhdkskalddkjdeskjsdjdkjddj!"
+  accessTokenExpiration: 3600000
+  refreshTokenExpiration: 7200000
+security:
+  enable: false

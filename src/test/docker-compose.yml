@@ -1,0 +1,44 @@
+services:
+  mongo:
+    # tomamos la última imagen de mongo
+    image: mongo:latest
+    container_name: mongo-ubertotest
+    hostname: host-mongo-ubertotest
+    ports:
+      - "27021:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: ubertotest
+
+
+  redis:
+    container_name: redis-uberto-test
+    hostname: redis
+    image: redis
+    ports:
+      - "6380:6379"
+
+  redis-commander:
+    container_name: redis-commander-uberto-test
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8082:8081"
+
+  neo4j:
+    image: neo4j:latest
+    restart: unless-stopped
+    ports:
+      - "7475:7475"
+      - "7688:7688"
+    environment:
+      # Raise memory limits
+      server.memory.pagecache.size: 1G
+      server.memory.heap.max_size: 1G
+      # auth
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+      NEO4J_AUTH: neo4j/passw0rd
