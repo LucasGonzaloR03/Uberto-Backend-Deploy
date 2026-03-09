@@ -182,7 +182,7 @@ class ProyectoBootstrap : InitializingBean {
             userData = userData1
             nombre = "Pablo"
             apellido = "Garcia"
-            saldo = 10000000000.0
+            saldo = 10000000000
             edad = 18
             telefono = "1122334455"
         }
@@ -190,7 +190,7 @@ class ProyectoBootstrap : InitializingBean {
             userData = userData2
             nombre = "Ana"
             apellido = "Rodriguez"
-            saldo = 10000000000.0
+            saldo = 10000000000
             edad = 18
             telefono = "1122334455"
         }
@@ -198,7 +198,7 @@ class ProyectoBootstrap : InitializingBean {
             userData = userData3
             nombre = "Carlos"
             apellido = "Martínez"
-            saldo = 800.0
+            saldo = 800
             edad = 30
             telefono = "6677889900"
         }
@@ -206,7 +206,7 @@ class ProyectoBootstrap : InitializingBean {
             userData = userData4
             nombre = "Pedro"
             apellido = "Benitez"
-            saldo = 1200.0
+            saldo = 1200
             edad = 22
             telefono = "0099887766"
         }

@@ -14,7 +14,9 @@ class UserDataService(
     private val userDataRepository: UserDataRepository,
     private val passwordEncoder: PasswordEncoder,
     private val utilidadJwt: UtilidadJwt,
-    private val refreshTokenService: RefreshTokenService
+    private val refreshTokenService: RefreshTokenService,
+    private val choferService: ChoferService,
+    private val pasajerosService: PasajerosService
 ){
 
     fun login(username: String, password :String): UsuarioDataDTO {
@@ -30,6 +32,23 @@ class UserDataService(
         return UsuarioDataDTO(userData.id, userData.tipoUsuario!!.tipoUsuarioStr, userData.fotoPerfil, tokenDeAcceso, tokenDeRefresco.token)
     }
 
+    fun register(registerData: RegisterRequestDataDTO){
+        val nuevoUserData: UserData = UserData().apply {
+            this.username = registerData.username
+            this.password = passwordEncoder.encode(registerData.password)
+            this.tipoUsuario = convertirStringATipoUsuario(registerData.role)
+            this.fotoPerfil = ""
+        }
+
+        val userDataGuardado:UserData = userDataRepository.save(nuevoUserData)
+
+        when(registerData.role){
+            "CHOFER" -> choferService.registrarUnNuevoChofer(registerData , userDataGuardado.id!!)
+            "PASAJERO" -> pasajerosService.registrarUnNuevoPasajero(registerData, userDataGuardado)
+            else -> throw BusinessException("Tipo de usuario invalido")
+        }
+    }
+
     fun refreshToken(refreshTokenRequest: String): UsuarioDataDTO {
         val refreshToken = refreshTokenService.findByToken(refreshTokenRequest)
             ?: throw TokenRefreshException("Refresh token no encontrado")
@@ -43,6 +62,7 @@ class UserDataService(
 
         return UsuarioDataDTO(userData.id, userData.tipoUsuario!!.tipoUsuarioStr, userData.fotoPerfil, nuevoTokenDeAcceso, nuevoTokenDeRefresco.token)
     }
+
     fun save(userDataChofer: UserData){
         userDataRepository.save(userDataChofer)
     }

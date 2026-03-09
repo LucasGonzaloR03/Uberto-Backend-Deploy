@@ -20,8 +20,8 @@ class Pasajero  {
     @Column(length=100)
     var apellido = ""
 
-    @Min(1)
-    var saldo: Double = 0.0
+    @Min(0)
+    var saldo: Long = 0
 
     @Min(1) @Max(120)
     var edad: Int = 0
@@ -38,7 +38,7 @@ class Pasajero  {
         }
     }
 
-    fun consultarSaldo() = this.saldo
+    fun consultarSaldo():Long = this.saldo
 
     fun saldoDiponible(precio: Double): Boolean = saldo > precio
 

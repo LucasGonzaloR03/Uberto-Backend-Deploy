@@ -212,4 +212,19 @@ class PasajerosService {
     fun buscarUltimaBusquedaDeUnPasajero(idPasajero: Long): UltimaBusquedaDeUnViajeDTO{
         return this.ultimaBusquedaDeUnViajeService.comprobarUltimaBusquedaDeUnViaje(idPasajero)
     }
+
+    fun registrarUnNuevoPasajero(registerData: RegisterRequestDataDTO, nuevoUserData: UserData){
+        val nuevoPasajero: Pasajero = Pasajero().apply {
+            nombre = registerData.nombre
+            apellido = registerData.apellido
+            userData = nuevoUserData
+            telefono = registerData.telefono
+            edad = registerData.edad
+            saldo = 1
+        }
+
+        nuevoPasajero.validadEntidad()
+        pasajeroRepository.save(nuevoPasajero)
+        pasajeroAmigoRepository.save(nuevoPasajero.toPasajeroAmigo())
+    }
 }

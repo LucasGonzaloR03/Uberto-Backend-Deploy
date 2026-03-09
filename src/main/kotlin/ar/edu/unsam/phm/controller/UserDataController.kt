@@ -3,6 +3,7 @@ package ar.edu.unsam.phm.controller
 import ar.edu.unsam.phm.domain.Chofer
 import ar.edu.unsam.phm.domain.UserData
 import ar.edu.unsam.phm.dto.RefreshTokenRequestDTO
+import ar.edu.unsam.phm.dto.RegisterRequestDataDTO
 import ar.edu.unsam.phm.dto.UsuarioDataDTO
 import ar.edu.unsam.phm.dto.UsuarioLogeadoDTO
 import ar.edu.unsam.phm.dto.UsuarioLoginDTO
@@ -31,5 +32,10 @@ class UserDataController {
     @PostMapping("/refresh")
     fun refreshToken(@RequestBody request: RefreshTokenRequestDTO): UsuarioDataDTO {
         return userDataService.refreshToken(request.refreshToken)
+    }
+
+    @PostMapping("/register")
+    fun register(@RequestBody registerData: RegisterRequestDataDTO){
+        userDataService.register(registerData)
     }
 }

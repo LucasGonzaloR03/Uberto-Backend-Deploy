@@ -9,7 +9,9 @@ import ar.edu.unsam.phm.extras.Formateador
 import ar.edu.unsam.phm.repository.UltimaBusquedaDeUnViajeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Service
 class UltimaBusquedaDeUnViajeService {
@@ -17,8 +19,12 @@ class UltimaBusquedaDeUnViajeService {
     lateinit var ultimaBusquedaDeUnViajeRepository: UltimaBusquedaDeUnViajeRepository
 
     fun crearUltimaBusquedaDeUnViaje(idPasajero:Long, consultaDeViaje: DetalleViajeDTO){
+        val fechaParsed = Instant.parse(consultaDeViaje.fechaInicio)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime()
+
         val ultimaBusqueda = UltimaBusquedaDeUnViaje(idPasajero, consultaDeViaje.origen,consultaDeViaje.destino,
-            LocalDateTime.parse(consultaDeViaje.fechaInicio),consultaDeViaje.cantidadDePasajeros).apply {
+            fechaParsed,consultaDeViaje.cantidadDePasajeros).apply {
           this.asignarId()
         }
         ultimaBusquedaDeUnViajeRepository.save(ultimaBusqueda)

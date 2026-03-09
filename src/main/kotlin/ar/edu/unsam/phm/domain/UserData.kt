@@ -19,3 +19,12 @@ enum class TipoUsuario(val tipoUsuarioStr: String) {
     CHOFER("CHOFER"),
     PASAJERO("PASAJERO")
 }
+
+fun convertirStringATipoUsuario(tipoUsuarioStr:String):TipoUsuario{
+    val tipoUsuarioMap = mapOf(
+        "CHOFER" to TipoUsuario.CHOFER,
+        "PASAJERO" to TipoUsuario.PASAJERO,
+    )
+
+    return tipoUsuarioMap[tipoUsuarioStr.uppercase()]?:TipoUsuario.PASAJERO
+}

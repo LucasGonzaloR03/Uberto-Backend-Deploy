@@ -4,6 +4,7 @@ import ar.edu.unsam.phm.repository.*
 import ar.edu.unsam.phm.domain.*
 import ar.edu.unsam.phm.extras.*
 import ar.edu.unsam.phm.dto.*
+import ar.edu.unsam.phm.errorHandling.BusinessException
 import ar.edu.unsam.phm.errorHandling.NotFoundException
 import ar.edu.unsam.phm.neo4jRepository.ChoferDeRelacionDeViajeRepository
 import jakarta.transaction.Transactional
@@ -12,6 +13,9 @@ import java.time.LocalDateTime
 
 @Service
 class ChoferService()  {
+    @Autowired
+    private lateinit var choferDeViajeRepository: ChoferDeViajeRepository
+
     @Autowired
     lateinit var choferRepository: ChoferRepository
     @Autowired
@@ -120,6 +124,34 @@ class ChoferService()  {
     fun findbyChoferRelacionId(idChofer: String):ChoferDeRelacionDeViaje{
         val choferEncontrado: ChoferDeRelacionDeViaje = this.choferRelacionDeViajeRepository.findByIdChofer(idChofer).orElseThrow{throw NotFoundException("No se encontro chofer en neo4j")}
         return choferEncontrado
+    }
+
+    fun registrarUnNuevoChofer(registerData:RegisterRequestDataDTO, userDataID:Long){
+        val nuevoChofer: Chofer = when (registerData.tipoChofer) {
+            "CSIMPLE" -> ChoferSimple(
+                userDataID, registerData.nombre, registerData.apellido, "",
+                registerData.precioBase, registerData.modeloVehiculo,
+                registerData.marcaVehiculo, registerData.patenteVehiculo, 0.0
+            )
+            "CPREMIUM" -> ChoferPremium(
+                userDataID, registerData.nombre, registerData.apellido, "",
+                registerData.precioBase, registerData.modeloVehiculo,
+                registerData.marcaVehiculo, registerData.patenteVehiculo, 0.0
+            )
+            "CMOTO" -> ChoferMoto(
+                userDataID, registerData.nombre, registerData.apellido, "",
+                registerData.precioBase, registerData.modeloVehiculo,
+                registerData.marcaVehiculo, registerData.patenteVehiculo, 0.0
+            )
+            else -> throw BusinessException("Tipo de chofer no válido: ${registerData.tipoChofer}")
+        }
+
+        nuevoChofer.validadEntidad()
+
+        choferRepository.save(nuevoChofer)
+        val nuevoChoferPostgres: ChoferDeViaje = choferDeViajeRepository.save(nuevoChofer.toChoferDeViaje())
+        choferRelacionDeViajeRepository.save(nuevoChoferPostgres.toChoferDeRelacionDeViaje())
+
     }
 
 }
