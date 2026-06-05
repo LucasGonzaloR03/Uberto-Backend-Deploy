@@ -30,6 +30,7 @@ class ConfiguracionSeguridad{
                 auth
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/error").permitAll()
+                    .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers("/pasajero/**").hasAuthority("ROLE_PASAJERO")
                     .requestMatchers("/chofer/**").hasAuthority("ROLE_CHOFER")

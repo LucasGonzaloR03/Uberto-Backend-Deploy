@@ -1,4 +1,5 @@
 package ar.edu.unsam.phm.service
+
 import org.springframework.stereotype.Service
 import ar.edu.unsam.phm.repository.*
 import ar.edu.unsam.phm.domain.*
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
 
 @Service
-class ChoferService()  {
+class ChoferService() {
     @Autowired
     private lateinit var choferDeViajeRepository: ChoferDeViajeRepository
 
@@ -26,20 +27,19 @@ class ChoferService()  {
     lateinit var viajeService: ViajeService
     @Autowired
     lateinit var ultimaBusquedaDeUnViajeService: UltimaBusquedaDeUnViajeService
-
     @Autowired
     lateinit var registroClickRepository: ContadorClicksRepository
 
     fun choferesDisponibles(viaje: DetalleViajeDTO, idPasajero: Long): List<TarjetaChoferDTO> {
-        val pseudoViaje: Viaje = Viaje().apply{
+        val pseudoViaje: Viaje = Viaje().apply {
             duracion = viaje.duracion
             cantidadPasajeros = viaje.cantidadDePasajeros
             fechaInicio = Formateador().formatoLocalDateTime(viaje.fechaInicio)
             this.asignarFechaFinalizacion()
         }
-        this.ultimaBusquedaDeUnViajeService.crearUltimaBusquedaDeUnViaje(idPasajero,viaje)
-        val choferesDisponibles: List<Chofer> = buscarChoferesDiponibles(pseudoViaje.fechaInicio,pseudoViaje.fechaFinalizacion)
-        return choferesDisponibles.map { it.toTarjetaChoferDTO(pseudoViaje)}
+        this.ultimaBusquedaDeUnViajeService.crearUltimaBusquedaDeUnViaje(idPasajero, viaje)
+        val choferesDisponibles: List<Chofer> = buscarChoferesDiponibles(pseudoViaje.fechaInicio, pseudoViaje.fechaFinalizacion)
+        return choferesDisponibles.map { it.toTarjetaChoferDTO(pseudoViaje) }
     }
 
     fun infoChofer(idChofer: Long): InformacionChoferDTO {
@@ -47,13 +47,13 @@ class ChoferService()  {
         return chofer.toInformacionChoferDTO()
     }
 
-    fun actualizarPromedioPuntajeChofer(idChofer: String, nuevoPromedioPuntajeChofer:Double) {
+    fun actualizarPromedioPuntajeChofer(idChofer: String, nuevoPromedioPuntajeChofer: Double) {
         val chofer = findbyChoferId(idChofer)
         chofer.actualizarPromedioPuntaje(nuevoPromedioPuntajeChofer)
         choferRepository.save(chofer)
     }
 
-    fun obtenerDetalleViajeChofer(idChofer: String): DetalleChoferParaViajeDTO{
+    fun obtenerDetalleViajeChofer(idChofer: String): DetalleChoferParaViajeDTO {
         val chofer = findbyChoferId(idChofer)
         val calificaciones: List<Calificacion> = calificacionService.findByViajeChoferId(idChofer)
         return chofer.toDetalleChoferParaViajeDTO(calificaciones)
@@ -62,7 +62,7 @@ class ChoferService()  {
     fun obtenerCalificacionesChofer(idChofer: Long): List<TarjetaCalificacionDTO> {
         val chofer: Chofer = this.findByUserDataId(idChofer)
         val calificaciones: List<Calificacion> = calificacionService.findByViajeChoferId(chofer.id)
-        return calificaciones.map{ it.toTarjetaCalificacionDTO() }
+        return calificaciones.map { it.toTarjetaCalificacionDTO() }
     }
 
     fun obtenerImporteTotalViajes(idChofer: Long): Double {
@@ -72,8 +72,11 @@ class ChoferService()  {
 
     @Transactional
     fun actualizarInfoChofer(datosActualizados: InformacionChoferDTO) {
-       val chofer: Chofer = this.findbyChoferId(datosActualizados.id)
+        val chofer: Chofer = this.findbyChoferId(datosActualizados.id)
         chofer.apply {
+            // FIX: nombre y apellido no se actualizaban, solo los datos del vehículo
+            nombre = datosActualizados.nombre
+            apellido = datosActualizados.apellido
             precioBase = datosActualizados.precioBase
             patenteVehiculo = datosActualizados.patenteVehiculo
             marcaVehiculo = datosActualizados.marcaVehiculo
@@ -83,50 +86,50 @@ class ChoferService()  {
         choferRepository.save(chofer)
     }
 
-    fun findByUserDataId(userDataID: Long): Chofer{
-       return choferRepository.findByUserDataId(userDataID).orElseThrow {
-           throw NotFoundException("No se encontró el chofer indicado: $userDataID")
-         }
+    fun findByUserDataId(userDataID: Long): Chofer {
+        return choferRepository.findByUserDataId(userDataID).orElseThrow {
+            throw NotFoundException("No se encontró el chofer indicado: $userDataID")
+        }
     }
 
-    fun findbyChoferId(choferId: String): Chofer{
-        return  choferRepository.findById(choferId).orElseThrow {
+    fun findbyChoferId(choferId: String): Chofer {
+        return choferRepository.findById(choferId).orElseThrow {
             throw NotFoundException("No se encontró el chofer indicado: $choferId")
         }
     }
 
-    fun obtenerViajesFiltroChofer(filtro: FiltroViajeDTO, idChofer:Long ): List<TarjetaViajeDTO>{
+    fun obtenerViajesFiltroChofer(filtro: FiltroViajeDTO, idChofer: Long): List<TarjetaViajeDTO> {
         val chofer: Chofer = this.findByUserDataId(idChofer)
         return viajeService.obtenerViajesFiltroChofer(filtro, chofer)
     }
 
     fun obtenerViajesRealizadosChofer(idChofer: Long): List<TarjetaViajeDTO> {
         val chofer: Chofer = this.findByUserDataId(idChofer)
-        return  viajeService.obtenerViajesRealizadosChofer(chofer)
+        return viajeService.obtenerViajesRealizadosChofer(chofer)
     }
 
-    fun buscarChoferesDiponibles( fechaInicio: LocalDateTime, fechaFinalizacion: LocalDateTime): List<Chofer>{
-        val listaChoferesDesocupados = choferRepository.findChoferesDisponibles(fechaInicio,fechaFinalizacion)
-       return  listaChoferesDesocupados
+    fun buscarChoferesDiponibles(fechaInicio: LocalDateTime, fechaFinalizacion: LocalDateTime): List<Chofer> {
+        return choferRepository.findChoferesDisponibles(fechaInicio, fechaFinalizacion)
     }
 
     fun obtenerRegistroClicks(idChofer: Long): List<RegistroClickDTO> {
         val chofer: Chofer = this.findByUserDataId(idChofer)
-        return registroClickRepository.findByChoferid(chofer.id).map{it.toRegistroClickDTO()}
+        return registroClickRepository.findByChoferid(chofer.id).map { it.toRegistroClickDTO() }
     }
 
-    fun agregarViajeAUnChofer(idChofer:String,nuevoViajeParaChofer: ViajeParaChofer){
+    fun agregarViajeAUnChofer(idChofer: String, nuevoViajeParaChofer: ViajeParaChofer) {
         val chofer: Chofer = this.findbyChoferId(idChofer)
         chofer.agregarNuevoViajeParaChofer(nuevoViajeParaChofer)
         choferRepository.save(chofer)
     }
 
-    fun findbyChoferRelacionId(idChofer: String):ChoferDeRelacionDeViaje{
-        val choferEncontrado: ChoferDeRelacionDeViaje = this.choferRelacionDeViajeRepository.findByIdChofer(idChofer).orElseThrow{throw NotFoundException("No se encontro chofer en neo4j")}
-        return choferEncontrado
+    fun findbyChoferRelacionId(idChofer: String): ChoferDeRelacionDeViaje {
+        return this.choferRelacionDeViajeRepository.findByIdChofer(idChofer).orElseThrow {
+            throw NotFoundException("No se encontro chofer en neo4j")
+        }
     }
 
-    fun registrarUnNuevoChofer(registerData:RegisterRequestDataDTO, userDataID:Long){
+    fun registrarUnNuevoChofer(registerData: RegisterRequestDataDTO, userDataID: Long) {
         val nuevoChofer: Chofer = when (registerData.tipoChofer) {
             "CSIMPLE" -> ChoferSimple(
                 userDataID, registerData.nombre, registerData.apellido, registerData.fotoPerfil,
@@ -147,11 +150,8 @@ class ChoferService()  {
         }
 
         nuevoChofer.validadEntidad()
-
         choferRepository.save(nuevoChofer)
         val nuevoChoferPostgres: ChoferDeViaje = choferDeViajeRepository.save(nuevoChofer.toChoferDeViaje())
         choferRelacionDeViajeRepository.save(nuevoChoferPostgres.toChoferDeRelacionDeViaje())
-
     }
-
 }

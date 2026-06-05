@@ -31,34 +31,27 @@ spring:
       ssl:
         enabled: true
 
-  ##MongoDB con sharding
-#  data:
-#    mongodb:
-#      host: localhost
-#      port: 27117
-#      database: uberto_mongo
-#  server:
-#    error:
-#      include-message: always
-#      include-binding-errors: always
-
   neo4j:
     uri: ${NEO_URI}
     authentication:
       username: ${NEO_USER}
       password: ${NEO_PASSWORD}
 
-# Para activar el Trace
 logging:
   level:
     root: INFO
 
-
-#jwt
-
 jwt:
-    key: ${JWT_KEY}
-    access-token-expiration: 50000000
-    refresh-token-expiration: 86400000
+  key: ${JWT_KEY}
+  access-token-expiration: 50000000
+  refresh-token-expiration: 86400000
 
-
+# Expone el endpoint /actuator/health para el self-ping
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

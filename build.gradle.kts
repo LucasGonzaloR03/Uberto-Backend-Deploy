@@ -25,13 +25,13 @@ repositories {
 val kotestVersion = "5.8.0"
 
 dependencies {
-
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-
     // Spring Boot básicos
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    // Actuator — expone /actuator/health para UptimeRobot y self-ping
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // Security
     implementation("org.springframework.boot:spring-boot-starter-security")
