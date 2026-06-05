@@ -7,5 +7,5 @@ RUN gradle bootJar --no-daemon -x test
 FROM eclipse-temurin:21.0.2_13-jre-jammy
 EXPOSE 8080
 COPY --from=build /home/gradle/src/build/libs/phm-2025-grupo2-0.0.1-SNAPSHOT.jar /app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
 
