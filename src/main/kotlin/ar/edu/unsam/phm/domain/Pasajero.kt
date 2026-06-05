@@ -1,14 +1,23 @@
 package ar.edu.unsam.phm.domain
 
 import ar.edu.unsam.phm.errorHandling.BusinessException
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.OneToOne
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.PositiveOrZero
 
 
 @Entity
 class Pasajero  {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
     @OneToOne(cascade = [(CascadeType.MERGE)]) @JoinColumn(name = "id_user_data", unique = true)
@@ -20,8 +29,9 @@ class Pasajero  {
     @Column(length=100)
     var apellido = ""
 
-    @Min(0)
-    var saldo: Long = 0
+    @Column(nullable = false)
+    @PositiveOrZero(message = "El saldo no puede ser negativo.")
+    var saldo: Double = 0.0
 
     @Min(1) @Max(120)
     var edad: Int = 0
@@ -38,7 +48,7 @@ class Pasajero  {
         }
     }
 
-    fun consultarSaldo():Long = this.saldo
+    fun consultarSaldo(): Double = this.saldo
 
     fun saldoDiponible(precio: Double): Boolean = saldo > precio
 

@@ -22,7 +22,7 @@ class InformacionPasajeroDTO(
     val nombre:String,
     val apellido:String,
     val telefono:String,
-    val saldo:Long,
+    val saldo: Double,
     val listaAmigos:List<TarjetaAmigoDTO>
 )
 

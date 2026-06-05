@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
+import java.time.Period
 
 @Service
 class PasajerosService {
@@ -219,8 +221,8 @@ class PasajerosService {
             apellido = registerData.apellido
             userData = nuevoUserData
             telefono = registerData.telefono
-            edad = registerData.edad
-            saldo = 1
+            edad = Period.between(LocalDate.parse(registerData.fechaNacimiento),LocalDate.now()).years
+            saldo = 0.0
         }
 
         nuevoPasajero.validadEntidad()

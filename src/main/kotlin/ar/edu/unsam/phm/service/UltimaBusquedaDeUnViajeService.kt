@@ -8,8 +8,10 @@ import ar.edu.unsam.phm.errorHandling.NotFoundException
 import ar.edu.unsam.phm.extras.Formateador
 import ar.edu.unsam.phm.repository.UltimaBusquedaDeUnViajeRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cglib.core.Local
 import org.springframework.stereotype.Service
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -19,9 +21,7 @@ class UltimaBusquedaDeUnViajeService {
     lateinit var ultimaBusquedaDeUnViajeRepository: UltimaBusquedaDeUnViajeRepository
 
     fun crearUltimaBusquedaDeUnViaje(idPasajero:Long, consultaDeViaje: DetalleViajeDTO){
-        val fechaParsed = Instant.parse(consultaDeViaje.fechaInicio)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
+        val fechaParsed = LocalDateTime.parse(consultaDeViaje.fechaInicio)
 
         val ultimaBusqueda = UltimaBusquedaDeUnViaje(idPasajero, consultaDeViaje.origen,consultaDeViaje.destino,
             fechaParsed,consultaDeViaje.cantidadDePasajeros).apply {

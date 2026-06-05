@@ -129,17 +129,17 @@ class ChoferService()  {
     fun registrarUnNuevoChofer(registerData:RegisterRequestDataDTO, userDataID:Long){
         val nuevoChofer: Chofer = when (registerData.tipoChofer) {
             "CSIMPLE" -> ChoferSimple(
-                userDataID, registerData.nombre, registerData.apellido, "",
+                userDataID, registerData.nombre, registerData.apellido, registerData.fotoPerfil,
                 registerData.precioBase, registerData.modeloVehiculo,
                 registerData.marcaVehiculo, registerData.patenteVehiculo, 0.0
             )
             "CPREMIUM" -> ChoferPremium(
-                userDataID, registerData.nombre, registerData.apellido, "",
+                userDataID, registerData.nombre, registerData.apellido, registerData.fotoPerfil,
                 registerData.precioBase, registerData.modeloVehiculo,
                 registerData.marcaVehiculo, registerData.patenteVehiculo, 0.0
             )
             "CMOTO" -> ChoferMoto(
-                userDataID, registerData.nombre, registerData.apellido, "",
+                userDataID, registerData.nombre, registerData.apellido, registerData.fotoPerfil,
                 registerData.precioBase, registerData.modeloVehiculo,
                 registerData.marcaVehiculo, registerData.patenteVehiculo, 0.0
             )

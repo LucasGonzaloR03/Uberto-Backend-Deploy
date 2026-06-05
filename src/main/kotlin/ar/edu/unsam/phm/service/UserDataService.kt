@@ -33,12 +33,22 @@ class UserDataService(
     }
 
     fun register(registerData: RegisterRequestDataDTO){
+        if(userDataRepository.findByUsername(registerData.username).isPresent){
+            throw BusinessException("No se puede registrar el usuario ya que el nombre de usuario se encuentra ocupado por otra persona.")
+        }
+
+        if(registerData.password != registerData.confirmPassword){
+            throw BusinessException("Error encontrado: Por favor revise nuevamente los datos enviados")
+        }
+
         val nuevoUserData: UserData = UserData().apply {
             this.username = registerData.username
             this.password = passwordEncoder.encode(registerData.password)
             this.tipoUsuario = convertirStringATipoUsuario(registerData.role)
-            this.fotoPerfil = ""
+            this.fotoPerfil = registerData.fotoPerfil
         }
+
+        nuevoUserData.validadEntidad()
 
         val userDataGuardado:UserData = userDataRepository.save(nuevoUserData)
 
@@ -69,7 +79,7 @@ class UserDataService(
 
     fun findById(id: Long): UserData {
         return this.userDataRepository.findById(id).orElseThrow {
-            throw NotFoundException("No se encontró el chofer con userDataId indicado: $id")
+            throw NotFoundException("No se encontró el chofer con userDataId indicado")
         }
     }
 

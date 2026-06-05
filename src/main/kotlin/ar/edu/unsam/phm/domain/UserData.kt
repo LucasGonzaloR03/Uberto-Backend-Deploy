@@ -1,5 +1,6 @@
 package ar.edu.unsam.phm.domain
 
+import ar.edu.unsam.phm.errorHandling.BusinessException
 import jakarta.persistence.*
 
 @Entity
@@ -13,6 +14,15 @@ class UserData{
     var tipoUsuario: TipoUsuario? = null
     @Column
     var fotoPerfil = ""
+
+    fun validadEntidad(){
+        require(username.isNotBlank()){
+            throw BusinessException("El nombre de usuario no puede estar vacio")
+        }
+        require(password.isNotBlank()){
+            throw BusinessException("La contraseña no puede estar vacia")
+        }
+    }
 }
 
 enum class TipoUsuario(val tipoUsuarioStr: String) {

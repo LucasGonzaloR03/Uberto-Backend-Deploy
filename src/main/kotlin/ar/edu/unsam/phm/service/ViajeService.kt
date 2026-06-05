@@ -18,28 +18,28 @@ class ViajeService {
 
     fun obtenerViajesPendientesPasajero(idPasajero: Long): List<TarjetaViajeDTO> {
         val existe = viajeRepository.existsByPasajeroId(idPasajero)
-        if (!existe) throw NotFoundException("El pasajero con id $idPasajero no tiene viajes")
+        if (!existe) throw NotFoundException("El pasajero que realizo la busqueda todavia no tiene viajes.\n Por favor dirigase a la pagina de inicio y realice uno.")
         val viajesPendientes = viajeRepository.findByPasajeroIdAndFechaFinalizacionAfter(idPasajero, LocalDateTime.now())
         return viajesPendientes.map{ it.toTarjetaViajeDTO() }
     }
 
     fun obtenerViajesRealizadosPasajero(idPasajero: Long): List<TarjetaViajeDTO> {
         val existe = viajeRepository.existsByPasajeroId(idPasajero)
-        if (!existe) throw NotFoundException("El pasajero con id $idPasajero no tiene viajes")
+        if (!existe) throw NotFoundException("El pasajero que realizo la busqueda todavia no termino ningun viaje.\n Por favor espere a que termine el viaje y vuelva a fijarse.")
         val viajesRealizados = viajeRepository.findByPasajeroIdAndFechaFinalizacionBefore(idPasajero, LocalDateTime.now())
         return viajesRealizados.map{ it.toTarjetaViajeDTO() }
     }
 
     fun obtenerViajesFiltroChofer(filtro: FiltroViajeDTO, chofer: Chofer ): List<TarjetaViajeDTO> {
         val existe = viajeRepository.existsByChoferDeViajeId(chofer.id)
-        if (!existe) throw NotFoundException("El chofer con id ${chofer.id} no tiene viajes")
+        if (!existe) throw NotFoundException("El chofer que realizo la busqueda todavia no tiene viajes. \n Por favor, espere a que un asociado a la aplicacion realice un viaje con usted.")
         val viajesFiltrados: List<Viaje> = viajeRepository.filtrarViajes( chofer.id,filtro.usuario, filtro.origen,filtro.destino,filtro.cantidadDePasajeros)
         return viajesFiltrados.map{ it.toTarjetaViajeDTO()}
     }
 
     fun obtenerViajesRealizadosChofer(chofer: Chofer): List<TarjetaViajeDTO> {
         val existe = viajeRepository.existsByChoferDeViajeId(chofer.id)
-        if (!existe) throw NotFoundException("El chofer con id ${chofer.id} no tiene viajes")
+        if (!existe) throw NotFoundException("El chofer que realizo la busqueda todavia no tiene viajes. \n Por favor, espere a que se realice un viaje completo.")
         val viajesRealizados: List<Viaje> = viajeRepository.findByChoferDeViajeIdAndFechaFinalizacionBefore(chofer.id, LocalDateTime.now())
 
         return viajesRealizados.map{ it.toTarjetaViajeDTO() }

@@ -20,6 +20,7 @@ data class RegisterRequestDataDTO(
     val patenteVehiculo: String,
     val marcaVehiculo: String,
     val modeloVehiculo: Int,
-    val edad: Int,
-    val telefono: String
+    val fechaNacimiento: String,
+    val telefono: String,
+    val fotoPerfil: String
 )
